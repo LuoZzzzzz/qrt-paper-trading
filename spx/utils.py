@@ -55,10 +55,3 @@ def get_metrics(price_df, n=50, show=True):
         plt.show()
 
     return daily_returns, daily_log_returns, annualised_returns, annualised_log_returns, top_n_stocks, covariance_matrix
-
-"""
-Returns
-
-1. 
-"""
-

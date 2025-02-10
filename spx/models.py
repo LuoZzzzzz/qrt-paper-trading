@@ -48,10 +48,10 @@ class NaiveSharpe(object):
     def check_sum(weights) -> float:
         return np.sum(weights) - 1
     
-    def optimise(self, show=True):
+    def optimise(self, show_results=True, plot_weights=True):
 
         def grab_negative_sharpe(weights):
-            return self.grab_negative_sharpe(weights)
+            return self.grab_negative_sharpe(weights)/500 ### Divide by 500 to keep the objective in a reasonable range
 
         optimized_sharpe = sci_opt.minimize(
             grab_negative_sharpe,           # minimize this.
@@ -61,19 +61,20 @@ class NaiveSharpe(object):
             constraints=self.constraints    # make sure you don't exceed the 100% constraint.
         )
 
-        # Print the results.
-        print('='*80)
-        print('OPTIMIZED SHARPE RATIO:')
-        print('-'*80)
-        print(optimized_sharpe)
-        print('-'*80)
+        # Print the results
+        if show_results:
+            print('='*80)
+            print('OPTIMIZED SHARPE RATIO:')
+            print('-'*80)
+            print(optimized_sharpe)
+            print('-'*80)
 
         # Get and save portolio weights
         portfolio_weights = optimized_sharpe.x
         portfolio_stocks = self.top_n_stocks
         self.unhedged_weights = portfolio_weights
 
-        if show:
+        if plot_weights:
             # Plot portfolio weights
             plt.figure(dpi=600)
             plt.bar(portfolio_stocks, portfolio_weights)
