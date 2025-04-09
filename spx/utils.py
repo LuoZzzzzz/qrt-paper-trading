@@ -36,7 +36,7 @@ Returns:
 def get_metrics(price_df, n=50, show=True):
     
     # Calculate expected daily returns
-    daily_returns = price_df.pct_change() 
+    daily_returns = price_df.pct_change(fill_method=None) 
     daily_log_returns = np.log(1.0 + daily_returns)
 
     # Calculate expected annualised returns (pd.Series sorted in descending order)

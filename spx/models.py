@@ -4,6 +4,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import scipy.optimize as sci_opt
 
+class Trade:
+    def __init__(self, date, stock_id, amount):
+        self.date = date
+        self.id = stock_id
+        self.qty = amount
+
 class NaiveSharpe(object):
 
     def __init__(self, annualised_log_returns, top_n_stocks, covariance_matrix):
@@ -168,8 +174,8 @@ class NaiveSharpe(object):
 
         # Plot total returns with time
         plt.figure(dpi=500)
-        plt.plot(dates, np.asarray(cumulative_long_values/cumulative_long_values[0]), label="Long Value", c="green")
-        plt.plot(dates, np.asarray(cumulative_short_values/cumulative_short_values[0]), label="Long Hedge", c="red")
+        #plt.plot(dates, np.asarray(cumulative_long_values/cumulative_long_values[0]), label="Long Value", c="green")
+        #plt.plot(dates, np.asarray(cumulative_short_values/cumulative_short_values[0]), label="Long Hedge", c="red")
         plt.plot(dates, np.asarray(cumulative_portfolio_values), label="Portfolio Value", c="blue")
         plt.plot(dates, scaled_future_spx_df, label="Index", c="gray")
         plt.tick_params(axis='x', labelrotation=90)
@@ -190,3 +196,8 @@ class NaiveSharpe(object):
         print("Index Sharpe: ", index_sharpe)
         print("Portfolio Sharpe: ", portfolio_sharpe)
         print("Correlation: ", cov_matrix[0, 1]/np.sqrt(cov_matrix[0, 0]*cov_matrix[1, 1]))
+
+    def get_transactions(self, date, capital, prices):
+        long_trades = [Trade(date, ticker, round(weight*capital/prices[ticker])) for ticker, weight in zip(self.long_weights.index, self.long_weights.array)]
+        short_trades = [Trade(date, ticker, -round(weight*capital/prices[ticker])) for ticker, weight in zip(self.short_weights.index, self.short_weights.array)]
+        return long_trades + short_trades
